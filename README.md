@@ -21,3 +21,5 @@ Subsequent scripts read that event data to create survival analysis plots and
 movies which augment analysis done by the NAADSM graphical user interface.
 These scripts also serve as examples, in Python and R, for how to read
 the HDF5 files with event data.
+
+![Flow diagram for tools](/naadsmtools.png?raw=true "How tools interrelate")
