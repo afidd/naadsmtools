@@ -1,7 +1,7 @@
 '''
-This script reads event data from a discrete time simulation
-and generates histograms of the number of days for each
-transition.
+This script reads event data from an HDF5-encoded event file
+and generates histograms of the number of days for each transition
+to occur.
 '''
 import csv
 import logging
