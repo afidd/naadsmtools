@@ -43,14 +43,66 @@ By defining a common data format for two different
 modeling paradigms, we can build downstream tools capable of interpreting either set
 of results.
 
+The tools consist of a mix of Python and R scripts for data processing, analysis and visualization.  Information on Python and R installations, and associated packages, are described below in the Appendix.
+
+
 ## List of tools
+
+. Makefile
+
+The individual tools described below are bundled up in a Makefile that can be run to process a NAADSM all-states-units output file and produce a number of analyses and plots.  This requires having the "make" utility installed (which is standard on unix-like operating systems, but not on Windows).  "make" is typically used for compiling source code; in this case, it is used to coordinate data processing by defining the dependencies of different files on one another.  As such, the Makefile could be replaced by a suitable shell script that carries out the same basic set of commands.
+
+make ID="Kershaw"
+
 
 ### convert_naadsm_xml.py
 
-NAADSM/SC uses as input XML files specifying model parameters and unit properties, rather than the composite scenario files used by the NAADSM GUI.  The NAADSM GUI can export the units and parameters XML files associated with a NAADSM scenario.  Under some circumstances, however, the resulting XML files will be encoded in UTF-16, while the NAADSM/SC program expects UTF-8 encoded XML files.  
+NAADSM/SC uses as input XML files specifying model parameters and unit properties, rather than the composite scenario files used by the NAADSM GUI.  The NAADSM GUI can export the units and parameters XML files associated with a NAADSM scenario.  Under some circumstances, however, the resulting XML files will be encoded in UTF-16, while the NAADSM/SC program expects UTF-8 encoded XML files.  The convert_naadsm_xml.py script converts xml files to a UTF-8 encoding suitable for NAADSM/SC.  (This script is only required if you find that NAADSM has exported in UTF-16.)
 
-The NAADSM frontend GUI enables users to develop scenarios
+Usage:
 
-On some occasions, 
+python convert_naadsm_xml.py -i input_filename -o output_filename
+
+will convert a UTF-16 encoded naadsm XML file (input_filename) to an equivalent UTF-8 encoded file (output_filename)
+
+## read_naadsm.py
+
+read_naadsm.py reads the all-states-units output of a NAADSM/SC run, and produces an HDF5-encoded events file for further processing, as described above.
+
+Usage:
+
+python read_naadsm.py --multiple --input naadsm_outputfile --output hdf5_events_file
+
+reads the all-states-units data in the naadsm_outputfile and writes the corresponding hdf5_events_file.  The --multiple flag is to be used if there are results from multiple NAADSM runs included in the naadsm_outputfile.
+
+
 
 ![Flow diagram for tools](/naadsmtools.png?raw=true "How tools interrelate")
+
+## Appendix
+
+Python might already be installed on your system (it is sometimes used for some systems administration tasks), but we recommend installing a separate version with additional functionality included.  The free Anaconda Python distribution ( https://www.continuum.io/content/anaconda-subscriptions ) is one such solution that we can recommend.  R might already be installed on your system too.  If it is not, it can be downloaded from CRAN ( https://cran.rstudio.com ); any additional packages needed for use with naadsmtools can be installed by running "make rpackages" (a defined target in the naadmtools Makefile) or an equivalent command-line installation.
+
+install additional Python packages:
+
+grep -h import *.py | sort | uniq
+
+import pyproj
+import sys, os.path
+# from sklearn.neighbors import KernelDensity
+from  matplotlib.animation import FuncAnimation
+from argparse import ArgumentParser
+from default_parser import DefaultArgumentParser
+from docopt import docopt
+import collections
+import csv
+import format
+import h5py
+import logging
+import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
+import numpy as np
+import sys
+import sys, getopt, io
+import unittest
+
