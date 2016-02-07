@@ -1,5 +1,7 @@
-NAADSMTRACE=test/HPAI_Kershaw_Parameters_no_controls_airborne_only_p5_runs1000_2.out
-NAADSMDATA=test/naadsm.h5
+#NAADSMTRACE=test/HPAI_Kershaw_Parameters_no_controls_airborne_only_p5_runs1000_2.out
+NAADSMTRACE=naadsm.out
+#NAADSMDATA=test/naadsm.h5
+NAADSMDATA=naadsm.h5
 ID=default
 
 .PHONY: ALL rpackages
@@ -16,10 +18,7 @@ susceptible_$(ID).pdf: susceptible_$(ID).csv
 	R --no-save --args "susceptible_$(ID)" < individual_dist.R
 
 clinical_$(ID).csv latent_$(ID).csv susceptible_$(ID).csv: $(NAADSMDATA)
-	python residence_histogram.py --input $(NAADSMDATA)
-	mv clinical.csv clinical_$(ID).csv 
-	mv latent.csv latent_$(ID).csv 
-	mv susceptible.csv susceptible_$(ID).csv
+	python residence_histogram.py --input $(NAADSMDATA) --id $(ID)
 
 outbreak_hist_$(ID).pdf: outbreak_hist_$(ID).csv
 	R --no-save --args "outbreak_hist_$(ID)" < plot_outbreaksize.R 

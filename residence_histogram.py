@@ -154,6 +154,8 @@ if __name__ == "__main__":
     parser=DefaultArgumentParser(description="Finds residence time in states.")
     parser.add_argument("--input", dest="infile", action="store",
         default="naadsm.h5", help="Input HDF5 file with ensemble of events")
+    parser.add_argument("--id", dest="ID", action="store",
+        default="", help="Specify scenario ID label for output files")
 
     args=parser.parse_args()
 
@@ -166,6 +168,14 @@ if __name__ == "__main__":
     tracking=Tracking(counts.farm_cnt, counts.run_cnt, counts.day_cnt)
     foreach_dataset(args.infile, tracking)
 
-    write_csv("susceptible", tracking.infect, tracking.infectc)
-    write_csv("latent", tracking.latent, tracking.latentc)
-    write_csv("clinical", tracking.clinical, tracking.clinicalc)
+    if args.ID == "":
+        susceptible_name = "susceptible"
+        latent_name = "latent"
+        clinical_name = "clinical"
+    else:
+        susceptible_name = "susceptible" + "_%s"%args.ID
+        latent_name = "latent" + "_%s"%args.ID
+        clinical_name = "clinical" + "_%s"%args.ID
+    write_csv(susceptible_name, tracking.infect, tracking.infectc)
+    write_csv(latent_name, tracking.latent, tracking.latentc)
+    write_csv(clinical_name, tracking.clinical, tracking.clinicalc)
