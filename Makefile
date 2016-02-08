@@ -9,13 +9,13 @@ ID=default
 ALL: clinical_$(ID).pdf latent_$(ID).pdf susceptible_$(ID).pdf outbreak_hist_$(ID).pdf
 
 clinical_$(ID).pdf: clinical_$(ID).csv
-	R --no-save --args "clinical_$(ID)" < individual_dist.R
+	R --no-save --args "clinical_$(ID)" < plot_individual_dist.R
 
 latent_$(ID).pdf: latent_$(ID).csv
-	R --no-save --args "latent_$(ID)" < individual_dist.R
+	R --no-save --args "latent_$(ID)" < plot_individual_dist.R
 
 susceptible_$(ID).pdf: susceptible_$(ID).csv
-	R --no-save --args "susceptible_$(ID)" < individual_dist.R
+	R --no-save --args "susceptible_$(ID)" < plot_individual_dist.R
 
 clinical_$(ID).csv latent_$(ID).csv susceptible_$(ID).csv: $(NAADSMDATA)
 	python residence_histogram.py --input $(NAADSMDATA) --id $(ID)
