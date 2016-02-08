@@ -110,18 +110,31 @@ def update(frame_number):
     rain_scat.set_sizes(rain_drops['size'])
 
 if __name__ == '__main__':
-    import sys, os.path
-    if len(sys.argv) > 1:
-        data_file = sys.argv[1]
-    else:
-        data_file = 'run.h5'
-    if len(sys.argv) > 2:
-        herd_file = sys.argv[2]
-    if len(sys.argv) > 3:
-        output_file = sys.argv[3]
-    else:
-        base = os.path.splitext(data_file)[0]
-        output_file = base+'.mp4'
+    import sys, os.path, getopt
+    data_file = "run.h5"
+    output_file = "run.mp4"
+    herd_file = None
+    initially_infected = []
+
+    options, arguments = getopt.getopt(sys.argv[1:], "i:u:o:I:")
+
+    for option, value in options:
+        print(option,value)
+        if option == "-i":
+            data_file = value
+        if option == "-u":
+            herd_file = value
+        if option == "-o":
+            output_file = value
+        if option == "-I":
+            try:
+                initially_infected = [int(e) for e in value.split(',')]
+            except:
+                raise IOError("list of initially infected units must be a comma-separated string of integers, e.g., 1,2,3")
+
+    if herd_file is None:
+        print("Error: must specify a unit (herd) file, using -u flag")
+        exit()
 
     f=h5py.File(data_file)
     locations, event, who, whom, when=transitions(f, herd_file)
@@ -167,11 +180,6 @@ if __name__ == '__main__':
     logger.debug("frame_cnt {0}".format(frame_cnt))
     logger.debug("frame_interval {0}".format(frame_interval))
 
-    # Create disease data
-    #farm_order=np.arange(0, farm_cnt)
-    #np.random.shuffle(farm_order)
-    #farm_times=np.random.uniform(0, end_time, farm_cnt)
-    #farm_times.sort()
     event_idx=0
 
     farms = np.zeros(n_drops,
@@ -204,14 +212,16 @@ if __name__ == '__main__':
                     s=rain_drops['size'], lw=0.5, facecolors='none',
                     edgecolors=rain_drops['color'])
 
-    #farm_idx=21-1
-    #farms['color'][farm_idx] = color_code['infected']
-    #rain_drops['size'][farm_idx]=marker_size
-    #rain_drops['color'][farm_idx, 3]=1.0
+    # Add infection for the initially infected sites
+    for idx in initially_infected:
+        farm_idx=idx-1
+        farms['color'][farm_idx] = color_code['infected']
+        rain_drops['size'][farm_idx]=marker_size
+        rain_drops['color'][farm_idx, 3]=1.0
 
     # Construct the animation, using the update function as the animation
     # director.
     animation = FuncAnimation(fig, update, frames=frame_cnt,
         interval=frame_interval, repeat=False)
     plt.show()
-    animation.save("points.mp4")
+    animation.save(output_file)
