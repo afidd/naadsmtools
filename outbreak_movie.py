@@ -13,7 +13,7 @@ import h5py
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from  matplotlib.animation import FuncAnimation
-
+import locations
 
 _degrees_to_radians=np.pi/180
 _radians_km=180*60*1.852/np.pi
@@ -29,8 +29,8 @@ def datasets(open_file):
             names.append(trajectory_name)
     return names
 
-def transitions(open_file):
-    locations=open_file["/trajectory/locations"]
+def transitions(open_file, herd_file):
+    loc=locations.load_herd_locations(herd_file)
     trajectory_name=datasets(open_file)[0]
     dset=open_file["/trajectory/{0}".format(trajectory_name)]
 
@@ -38,7 +38,7 @@ def transitions(open_file):
     who=dset["Who"]
     whom=dset["Whom"]
     when=dset["When"]
-    ret=[np.array(locations)]
+    ret=[np.array(loc)]
     ret.extend([np.array(x) for x in [event, who, whom, when]])
     return ret
 
@@ -59,6 +59,7 @@ def map_proj():
 
 def update(frame_number):
     # Get an index which we can use to re-spawn the oldest raindrop.
+    logger.debug("frame_number {0}".format(frame_number))
     current_time = frame_number*end_time/frame_cnt
 
     # Make all colors more transparent as time progresses.
@@ -87,18 +88,19 @@ def update(frame_number):
             farms['color'][farm_idx] = color_code['infected']
             rain_drops['size'][farm_idx]=marker_size
             rain_drops['color'][farm_idx, 3]=1.0
-            x0, y0=locations_scaled[source_idx,:]
-            x1, y1=locations_scaled[farm_idx,:]
-            dx=x1-x0
-            dy=y1-y0
-            r=np.sqrt(dx*dx+dy*dy)
-            dr=0.04 # Want to reduce length by fixed distance
-            g=(r-dr)/r
-            if g<0:
-                g=0.1
-            logger.info("x0 {0} x1 {1}".format(x0, x1))
-            ax.arrow(x0, y0, g*dx, g*dy, head_width=0.01, head_length=0.02,
-                fc='k', ec='k')
+            if source_idx != farm_idx:
+                x0, y0=locations_scaled[source_idx,:]
+                x1, y1=locations_scaled[farm_idx,:]
+                dx=x1-x0
+                dy=y1-y0
+                r=np.sqrt(dx*dx+dy*dy)
+                dr=0.04 # Want to reduce length by fixed distance
+                g=(r-dr)/r
+                if g<0:
+                    g=0.1
+                logger.info("x0 {0} x1 {1}".format(x0, x1))
+                ax.arrow(x0, y0, g*dx, g*dy, head_width=0.01, head_length=0.02,
+                    fc='k', ec='k')
         event_idx+=1
 
 
@@ -114,13 +116,15 @@ if __name__ == '__main__':
     else:
         data_file = 'run.h5'
     if len(sys.argv) > 2:
-        output_file = sys.argv[2]
+        herd_file = sys.argv[2]
+    if len(sys.argv) > 3:
+        output_file = sys.argv[3]
     else:
         base = os.path.splitext(data_file)[0]
         output_file = base+'.mp4'
 
     f=h5py.File(data_file)
-    locations, event, who, whom, when=transitions(f)
+    locations, event, who, whom, when=transitions(f, herd_file)
     logger.debug("event {0}".format(event))
     logger.debug("who {0}".format(who))
     logger.debug("whom {0}".format(whom))
@@ -157,8 +161,11 @@ if __name__ == '__main__':
     farm_cnt = n_drops
     last_infection=np.where(event==0)[0]
     end_time=when[last_infection[-1]]*1.05
-    frame_cnt=1000
-    frame_interval=10
+    frame_cnt=int(end_time)+1
+    frame_interval=int(10000/frame_cnt)
+    logger.debug("end_time {0}".format(end_time))
+    logger.debug("frame_cnt {0}".format(frame_cnt))
+    logger.debug("frame_interval {0}".format(frame_interval))
 
     # Create disease data
     #farm_order=np.arange(0, farm_cnt)
@@ -197,14 +204,14 @@ if __name__ == '__main__':
                     s=rain_drops['size'], lw=0.5, facecolors='none',
                     edgecolors=rain_drops['color'])
 
-    farm_idx=21-1
-    farms['color'][farm_idx] = color_code['infected']
-    rain_drops['size'][farm_idx]=marker_size
-    rain_drops['color'][farm_idx, 3]=1.0
+    #farm_idx=21-1
+    #farms['color'][farm_idx] = color_code['infected']
+    #rain_drops['size'][farm_idx]=marker_size
+    #rain_drops['color'][farm_idx, 3]=1.0
 
     # Construct the animation, using the update function as the animation
     # director.
     animation = FuncAnimation(fig, update, frames=frame_cnt,
-        interval=frame_interval)
+        interval=frame_interval, repeat=False)
+    plt.show()
     animation.save("points.mp4")
-    #plt.show()
