@@ -119,28 +119,12 @@ produces the files susceptible_ID.csv, latent_ID.csv, and clinical_ID.csv, where
 
 ## Appendix
 
-Python might already be installed on your system (it is sometimes used for some systems administration tasks), but we recommend installing a separate version with additional functionality included.  The free Anaconda Python distribution ( https://www.continuum.io/content/anaconda-subscriptions ) is one such solution that we can recommend.  R might already be installed on your system too.  If it is not, it can be downloaded from CRAN ( https://cran.rstudio.com ); any additional packages needed for use with naadsmtools can be installed by running "make rpackages" (a defined target in the naadmtools Makefile) or an equivalent command-line installation.
+Python might already be installed on your system (it is sometimes used for some systems administration tasks), but we recommend installing a separate version with additional functionality included.  The free Anaconda Python distribution ( https://www.continuum.io/content/anaconda-subscriptions ) is one such solution that we can recommend.  Anaconda Python with its own python package manager named "conda".  Some packages are installed by default, but others can be optionally added with conda.  Execute the following commands to install the pyproj and docopt packages used by some of the naadsmtools:
 
-install additional Python packages:
+conda install pyproj
+conda install docopt
 
-grep -h import *.py | sort | uniq
+R might already be installed on your system too.  If it is not, it can be downloaded from CRAN ( https://cran.rstudio.com ); any additional packages needed for use with naadsmtools can be installed by running "make rpackages" (a defined target in the naadmtools Makefile) or an equivalent command-line installation.
 
-import pyproj
-import sys, os.path
-# from sklearn.neighbors import KernelDensity
-from  matplotlib.animation import FuncAnimation
-from argparse import ArgumentParser
-from default_parser import DefaultArgumentParser
-from docopt import docopt
-import collections
-import csv
-import format
-import h5py
-import logging
-import matplotlib.colors as mcolors
-import matplotlib.pyplot as plt
-import numpy as np
-import sys
-import sys, getopt, io
-import unittest
+
 
