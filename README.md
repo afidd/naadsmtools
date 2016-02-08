@@ -71,7 +71,7 @@ As described in the subsections below, this will produce the following outputs:
 
 As an alternative to using the Makefile (without benefitting from make's dependency analysis), a shell script "pipeline.sh" is also provided showing the basic workflow.  As with the Makefile, the variables NAADSMTRACE, ID and NAADSMDATA must be provided, although with a slightly different command-line format:
 
-NAADSMTRACE=test/HPAI_Kershaw_Parameters_no_controls_airborne_only_p5_runs1000_2.out ID=Kershaw NAADSMDATA=test/naadsmtest.h5 ./pipeline.sh
+NAADSMTRACE=my_naadsm_trace.out ID=MyScenario NAADSMDATA=my_naadsm_data.h5 ./pipeline.sh
 
 This will produce the same set of output files listed above for the Makefile.
 
