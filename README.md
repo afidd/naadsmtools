@@ -46,7 +46,7 @@ This diagram demonstrates how the naadsmtools interrelate and how data and analy
 
 ![Flow diagram for tools](/naadsmtools.png?raw=true "How tools interrelate") 
 
-. Makefile
+## Makefile
 
 The individual tools described below are bundled up in a Makefile that can be run to process a NAADSM all-states-units output file and produce a number of analyses and plots.  This requires having the "make" utility installed (which is standard on unix-like operating systems, but not on Windows).  "make" is typically used for compiling source code; in this case, it is used to coordinate data processing by defining the dependencies of different files on one another.  The Makefile could be replaced by a suitable shell script that carries out the same basic set of commands.
 
@@ -66,7 +66,7 @@ As described in the subsections below, this will produce the following outputs:
 - outbreak_hist_MyScenario.csv
 - outbreak_hist_MyScenario.pdf
 
-. Shell script: pipeline.sh
+## Shell script: pipeline.sh
 
 As an alternative to using the Makefile (without benefitting from make's dependency analysis), a shell script "pipeline.sh" is also provided showing the basic workflow.  As with the Makefile, the variables NAADSMTRACE, ID and NAADSMDATA must be provided, although with a slightly different command-line format:
 
