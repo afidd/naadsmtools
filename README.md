@@ -1,4 +1,4 @@
-# naadsmtools
+n# naadsmtools
 A set of scripts and code to assist with the analysis of simulation results from the North American Animal Disease Simulation Model.
 
 ## NAADSM
@@ -11,16 +11,11 @@ supercomputer) that is run from the command line, and a frontend,
 which is a Windows graphical user interface (GUI).  The tools
 developed here have been targeted to work with NAADSM release 3.2.19,
 although we suspect that these should also work with more recent
-NAADSM 4.x releases.  There are three ways to get data from a NAADSM
-run.
-
- 1. Copy columns from the graphical interface. There are a few outputs the graphical interface will show.
- 2. Query the database of results that is internal to NAADSM.
- 3. Run NAADSM/SC and print results to a file.
+NAADSM 4.x releases.  
 
 ## These tools interpret NAADSM/SC all-units-states output
 
-NAADSM/SC can be configured to produce different types of output data, by specifying the 
+We are specifically interested in output data from NAADSM that indicates the state of every unit on each day.  From the NAADSM Windows GUI, this can be produced by selecting "Scenario Parameters -> Output Options", and then selecting the checkbox under "Daily unit states: Write a plain text file containing daily states for all units".  Alternatively, NAADSM/SC can be configured to produce different types of output data, by specifying the 
 relevant <output></output> tags in a NAADSM parameter scenario XML file.  The following 
 entry in a scenario file will print the disease state of every unit (farm) for every day in 
 a simulation:
@@ -28,7 +23,8 @@ a simulation:
   <variable-name>all-units-states</variable-name>
   <frequency>daily</frequency>
 </output>
-It is this particular output data that these scripts are intended to analyze.  In some of what follows, we refer to this all-units-states output file as a "NAADSM Trace".  The first step is to process the NAADSM Trace data to identify the daily changes of 
+
+It is these particular output data that the naadsmtools scripts are intended to analyze.  In some of what follows, we refer to this all-units-states output file as a "NAADSM Trace".  (Note: the formats of the daily trace data produced by NAADSM/SC and the NAADSM GUI are slightly different, although they contain the same basic information.)  The first step is to process the NAADSM Trace data to identify the daily changes of 
 state, and to record those events in a file
 formatted with [Hierarchical Data Format](https://www.hdfgroup.org/HDF5/), (HDF5).
 Subsequent scripts read that event data to create survival analysis plots and
@@ -47,9 +43,11 @@ The tools consist of a mix of Python and R scripts for data processing, analysis
 
 ## List of tools
 
+Shell script???
+
 . Makefile
 
-The individual tools described below are bundled up in a Makefile that can be run to process a NAADSM all-states-units output file and produce a number of analyses and plots.  This requires having the "make" utility installed (which is standard on unix-like operating systems, but not on Windows).  "make" is typically used for compiling source code; in this case, it is used to coordinate data processing by defining the dependencies of different files on one another.  As such, the Makefile could be replaced by a suitable shell script that carries out the same basic set of commands.
+The individual tools described below are bundled up in a Makefile that can be run to process a NAADSM all-states-units output file and produce a number of analyses and plots.  This requires having the "make" utility installed (which is standard on unix-like operating systems, but not on Windows).  "make" is typically used for compiling source code; in this case, it is used to coordinate data processing by defining the dependencies of different files on one another.  The Makefile could be replaced by a suitable shell script that carries out the same basic set of commands.
 
 Using the Makefile requires a NAADSM Trace file as input, and optionally can be configured with an ID to label the various output and a name for the HDF5-encoded event data file.  A call to "make" might look like this:
 
@@ -99,6 +97,11 @@ produces the files susceptible_ID.csv, latent_ID.csv, and clinical_ID.csv, where
 
 ## plot_individual_dist.R
 
+
+## plot_outbreaksize.R
+
+
+## outbreak_movie.py
 
 
 
