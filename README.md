@@ -40,7 +40,6 @@ of results.
 
 The tools consist of a mix of Python and R scripts for data processing, analysis and visualization.  Information on Python and R installations, and associated packages, are described below in the Appendix.
 
-
 ## List of tools
 
 This diagram demonstrates how the naadsmtools interrelate and how data and analyses proceed through the pipeline.
@@ -83,7 +82,7 @@ Usage:
 
 python convert_naadsm_xml.py -i input_filename -o output_filename
 
-will convert a UTF-16 encoded naadsm XML file (input_filename) to an equivalent UTF-8 encoded file (output_filename)
+converts a UTF-16 encoded naadsm XML file (input_filename) to an equivalent UTF-8 encoded file (output_filename)
 
 ## read_naadsm.py
 
@@ -137,13 +136,10 @@ python outbreak_movie.py -i input_file -u unit_xml_file -o output_file -I initia
 
 where:
 
-input_file is an HDF5-encoded event file (e.g., produced by read_naadsm.py)
-unit_xml_file is a NAADSM unit XML file (specifying herd/unit locations)
-output_file is the desired name of the resulting .mp4 file
-initial_sites is a comma-separate list of unit IDs indicating which premises were initially infected
-
-
-
+- input_file is an HDF5-encoded event file (e.g., produced by read_naadsm.py)
+- unit_xml_file is a NAADSM unit XML file (specifying herd/unit locations)
+- output_file is the desired name of the resulting .mp4 file
+- initial_sites is a comma-separate list of unit IDs indicating which premises were initially infected
 
 ## Appendix
 
