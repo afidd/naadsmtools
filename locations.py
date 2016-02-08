@@ -1,9 +1,27 @@
 import os.path
 import xml.etree.ElementTree as etree
 import xml.parsers.expat.errors
+import numpy as np
+import scipy.spatial.distance as distance
 import logging
 
 logger=logging.getLogger(__file__)
+
+class Farm(object):
+    def __init__(self, name):
+        self.name=name
+
+
+_degrees_to_radians=np.pi/180
+_radians_km=180*60*1.852/np.pi
+
+def distancekm(latlon1, latlon2):
+    """Distance computed on a spherical earth.
+    Taken from http://williams.best.vwh.net/avform.htm."""
+    ll1=latlon1*_degrees_to_radians
+    ll2=latlon2*_degrees_to_radians
+    return _radians_km*(2*np.arcsin(np.sqrt(np.power(np.sin((ll1[0]-ll2[0])/2),2)+
+        np.cos(ll1[0])*np.cos(ll2[0])*np.power(np.sin((ll1[1]-ll2[1])/2), 2))))
 
 class Landscape(object):
     def __init__(self):
@@ -27,7 +45,7 @@ class Landscape(object):
             self.farms.append(f)
         self.farm_locations=np.array([x.latlon for x in self.farms])
         self.distances=distance.squareform(
-            distance.pdist(self.farm_locations, util.distancekm))
+            distance.pdist(self.farm_locations, distancekm))
         logger.debug("found {0} farms".format(len(self.farms)))
 
 def load_naadsm_herd(herd_filename):
