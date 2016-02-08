@@ -1,4 +1,4 @@
-n# naadsmtools
+# naadsmtools
 A set of scripts and code to assist with the analysis of simulation results from the North American Animal Disease Simulation Model.
 
 ## NAADSM
@@ -43,7 +43,9 @@ The tools consist of a mix of Python and R scripts for data processing, analysis
 
 ## List of tools
 
-Shell script???
+This diagram demonstrates how the naadsmtools interrelate and how data and analyses proceed through the pipeline.
+
+![Flow diagram for tools](/naadsmtools.png?raw=true "How tools interrelate") 
 
 . Makefile
 
@@ -64,6 +66,14 @@ As described in the subsections below, this will produce the following outputs:
 - clinical_MyScenario.pdf
 - outbreak_hist_MyScenario.csv
 - outbreak_hist_MyScenario.pdf
+
+. Shell script: pipeline.sh
+
+As an alternative to using the Makefile (without benefitting from make's dependency analysis), a shell script "pipeline.sh" is also provided showing the basic workflow.  As with the Makefile, the variables NAADSMTRACE, ID and NAADSMDATA must be provided, although with a slightly different command-line format:
+
+NAADSMTRACE=test/HPAI_Kershaw_Parameters_no_controls_airborne_only_p5_runs1000_2.out ID=Kershaw NAADSMDATA=test/naadsmtest.h5 ./pipeline.sh
+
+This will produce the same set of output files listed above for the Makefile.
 
 ### convert_naadsm_xml.py
 
@@ -106,7 +116,6 @@ produces the files susceptible_ID.csv, latent_ID.csv, and clinical_ID.csv, where
 
 
 
-![Flow diagram for tools](/naadsmtools.png?raw=true "How tools interrelate")
 
 ## Appendix
 
