@@ -1,5 +1,5 @@
 # naadsmtools
-A set of scripts and code to assist with the analysis of simulation results from the North American Animal Disease Simulation Model.
+A set of scripts and code to assist with the analysis of simulation results from the North American Animal Disease Simulation Model.  Repository is online at https://github.com/afidd/naadsmtools .
 
 ## NAADSM
 
