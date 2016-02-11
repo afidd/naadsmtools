@@ -6,22 +6,6 @@ from default_parser import DefaultArgumentParser
 logger=logging.getLogger(__file__)
 
 
-def read_naadsmsc(filename):
-    vals=list()
-    with open(filename, "r") as f:
-        line=f.readline()
-        while line is not "":
-            if line.startswith("node"):
-                x, n, x, r=line.strip().split()
-                n=int(n)
-                r=int(r)
-                line=f.readline()
-                states=[int(y) for y in line.strip().split()]
-                vals.append(np.array(states))
-            line=f.readline()
-    return np.vstack(vals)
-
-
 def combine_counts(starting, combine):
     for k, v in combine.items():
         if k not in starting:
@@ -30,7 +14,6 @@ def combine_counts(starting, combine):
             starting[k]+=v
     return starting
 
-
 def read_multiple_naadsmsc(filename, outfile):
     hdf=h5py.File(outfile, "w")
     hdf.create_group("/trajectory")
@@ -38,35 +21,69 @@ def read_multiple_naadsmsc(filename, outfile):
     allowed=dict()
     vals=list()
     run=-1
-    transitions_type={(0,1) : 0, (1,3) : 1, (3,4) : 3,
-        (4,0) : 4, (0,3) : 5, (0,4) : 6, (1,4) : 8}
+    transitions_type=dict([(b,a+10) for (a,b) in enumerate([(s,d) for s in range(6) for d in range(6) if s!=d])])
+    transitions_type.update({(0,1) : 0, (1,3) : 1, (3,4) : 3, (4,0) : 4, (0,3) : 5, (0,4) : 6, (1,4) : 8})
+    # lookup table for states from naadsm/gui/NAADSMLibrary.pas
+    lookup = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, \
+              'S': 0, 'L': 1, 'B': 2, 'C': 3, 'N': 4, 'V': 5, 'D': 6}
     with open(filename, "r") as f:
         line=f.readline()
-        while line is not "":
-            if line.startswith("node"):
-                x, n, x, r=line.strip().split()
-                n=int(n)
-                r=int(r)
+        if len(line)<2:
+            print(line, len(line))
+        if line.startswith("node"):
+            while line is not "":
+                if line.startswith("node"):
+                    x, n, x, r=line.strip().split()
+                    n=int(n)
+                    r=int(r)
+
+                    if r!=run:
+                        if len(vals)>0:
+                            vals=np.vstack(vals)
+                            allowed=combine_counts(allowed, show_transitions(vals))
+                            events=events_from_states(vals, transitions_type)
+                            save_h5(hdf, events)
+                        vals=list()
+                        run=r
+
+                    line=f.readline()
+                    states=[int(y) for y in line.strip().split()]
+                    vals.append(np.array(states))
+
+                line=f.readline()
+
+        elif line.startswith("Iteration"):
+            while True:
+                if line.startswith("Iteration"):
+                    x, r=line.strip().split()
+                    r=int(r)
 
                 if r!=run:
                     if len(vals)>0:
                         vals=np.vstack(vals)
                         allowed=combine_counts(allowed, show_transitions(vals))
-                        events=events_from_states(vals,
-                                transitions_type)
+                        events=events_from_states(vals, transitions_type)
                         save_h5(hdf, events)
                     vals=list()
                     run=r
 
                 line=f.readline()
-                states=[int(y) for y in line.strip().split()]
-                vals.append(np.array(states))
+                if not line: break
+
+                while (len(line) != 1) and (not line.startswith("Iteration")):
+                    states=[lookup[y] for y in line.strip().split()]
+                    vals.append(np.array(states))
+                    line=f.readline()
+                    if not line: break
+
             line=f.readline()
+                
     if len(vals)>0:
         vals=np.vstack(vals)
         allowed=combine_counts(allowed, show_transitions(vals))
         events=events_from_states(np.vstack(vals), transitions_type)
         save_h5(hdf, events)
+
     return allowed
 
 
@@ -126,36 +143,14 @@ def save_h5(openh5, events):
 
 
 if __name__ == "__main__":
-    parser=DefaultArgumentParser(description="Produces csv of total outbreak size")
+    parser=DefaultArgumentParser(description="Produces HDF5 event file from trace data")
     parser.add_argument("--input", dest="infile", action="store",
-        default="naadsm.out", help="Input trace from NAADSM/SC")
+        default="naadsm.out", help="Input trace from NAADSM")
     parser.add_argument("--output", dest="outfile", action="store",
         default="naadsm.h5", help="HDF5 file with events")
-    parser.add_function("multiple", "Copy all events to output file")
-    parser.add_function("showstates", "Take a look at state transitions")
     args=parser.parse_args()
 
-    if args.multiple:
-        allowed_transitions=read_multiple_naadsmsc(args.infile, args.outfile)
-        logger.info("allowed transitions are {0}.".format(allowed_transitions))
+    allowed_transitions=read_multiple_naadsmsc(args.infile, args.outfile)
+    logger.info("allowed transitions are {0}.".format(allowed_transitions))
 
-    if args.showstates:
-        vals=read_naadsmsc(args.infile)
-        print("The number of farms is {0}".format(vals.shape[1]))
-        print("The number of time steps is {0}".format(len(vals)))
-        print("There are {0} nonzero entries in the state array.".format(
-            np.count_nonzero(vals)))
-        print("Allowed transitions and their count:")
-        allowed=show_transitions(vals)
-        print("from\tto\tcount")
-        for ((a,b),c) in sorted(allowed.items()):
-            print("{0}\t{1}\t{2}".format(a,b,c))
-
-        transitions_type={(0,1) : 1, (0,3) : 0, (1,3) : 3}
-        events=events_from_states(vals, transitions_type)
-
-        logger.info("Writing a trajectory into {0}".format(args.outfile))
-        f=h5py.File(args.outfile, "w")
-        f.create_group("/trajectory")
-        save_h5(f, events)
 

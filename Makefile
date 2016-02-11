@@ -27,7 +27,7 @@ outbreak_hist_$(ID).csv: $(NAADSMDATA)
 	python outbreaksize.py --input $(NAADSMDATA) --output outbreak_hist_$(ID).csv
 
 $(NAADSMDATA): $(NAADSMTRACE)
-	python read_naadsm.py --multiple --input $(NAADSMTRACE) --output $(NAADSMDATA)
+	python read_naadsm.py --input $(NAADSMTRACE) --output $(NAADSMDATA)
 
 clean:
 	rm -f clinical_$(ID).pdf latent_$(ID).pdf susceptible_$(ID).pdf clinical_$(ID).csv latent_$(ID).csv susceptible_$(ID).csv outbreak_hist_$(ID).csv outbreak_hist_$(ID).pdf

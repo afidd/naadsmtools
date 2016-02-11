@@ -13,12 +13,11 @@ developed here have been targeted to work with NAADSM release 3.2.19,
 although we suspect that these should also work with more recent
 NAADSM 4.x releases.  
 
-## These tools interpret NAADSM/SC all-units-states output
+## These tools interpret NAADSM all-units-states output
 
 We are specifically interested in output data from NAADSM that indicates the state of every unit on each day.  From the NAADSM Windows GUI, this can be produced by selecting "Scenario Parameters -> Output Options", and then selecting the checkbox under "Daily unit states: Write a plain text file containing daily states for all units".  Alternatively, NAADSM/SC can be configured to produce different types of output data, by specifying the 
 relevant <output></output> tags in a NAADSM parameter scenario XML file.  The following 
-entry in a scenario file will print the disease state of every unit (farm) for every day in 
-a simulation:
+entry in a scenario file will print the disease state of every unit (farm) for every day in a simulation:
 <output>
   <variable-name>all-units-states</variable-name>
   <frequency>daily</frequency>
@@ -90,9 +89,9 @@ read_naadsm.py reads the all-states-units output of a NAADSM/SC run, and produce
 
 Usage:
 
-python read_naadsm.py --multiple --input naadsm_outputfile --output hdf5_events_file
+python read_naadsm.py --input naadsm_outputfile --output hdf5_events_file
 
-reads the all-states-units data in the naadsm_outputfile and writes the corresponding hdf5_events_file.  The --multiple flag is to be used if there are results from multiple NAADSM runs included in the naadsm_outputfile.
+reads the all-states-units data in the naadsm_outputfile and writes the corresponding hdf5_events_file.
 
 ### residence_histogram.py
 
