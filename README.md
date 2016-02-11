@@ -146,8 +146,10 @@ where:
 
 Python might already be installed on your system (it is sometimes used for some systems administration tasks), but we recommend installing a separate version with additional functionality included.  The free Anaconda Python distribution ( https://www.continuum.io/content/anaconda-subscriptions ) is one such solution that we can recommend.  Anaconda Python with its own python package manager named "conda".  Some packages are installed by default, but others can be optionally added with conda.  Execute the following commands to install the pyproj and docopt packages used by some of the naadsmtools:
 
+```
 conda install pyproj
 conda install docopt
+```
 
 R might already be installed on your system too.  If it is not, it can be downloaded from CRAN ( https://cran.rstudio.com ); any additional packages needed for use with naadsmtools can be installed by running "make rpackages" (a defined target in the naadmtools Makefile) or an equivalent command-line installation.
 
