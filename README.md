@@ -18,12 +18,13 @@ NAADSM 4.x releases.
 We are specifically interested in output data from NAADSM that indicates the state of every unit on each day.  From the NAADSM Windows GUI, this can be produced by selecting "Scenario Parameters -> Output Options", and then selecting the checkbox under "Daily unit states: Write a plain text file containing daily states for all units".  Alternatively, NAADSM/SC can be configured to produce different types of output data, by specifying the 
 relevant <output></output> tags in a NAADSM parameter scenario XML file.  The following 
 entry in a scenario file will print the disease state of every unit (farm) for every day in a simulation:
-<tt>
+```
+xml
 <output>
   <variable-name>all-units-states</variable-name>
   <frequency>daily</frequency>
 </output>
-</tt>
+```
 
 It is these particular output data that the naadsmtools scripts are intended to analyze.  In some of what follows, we refer to this all-units-states output file as a "NAADSM Trace".  (Note: the formats of the daily trace data produced by NAADSM/SC and the NAADSM GUI are slightly different, although they contain the same basic information.)  The first step is to process the NAADSM Trace data to identify the daily changes of 
 state, and to record those events in a file
