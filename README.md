@@ -19,7 +19,6 @@ We are specifically interested in output data from NAADSM that indicates the sta
 relevant <output></output> tags in a NAADSM parameter scenario XML file.  The following 
 entry in a scenario file will print the disease state of every unit (farm) for every day in a simulation:
 ```
-xml
 <output>
   <variable-name>all-units-states</variable-name>
   <frequency>daily</frequency>
