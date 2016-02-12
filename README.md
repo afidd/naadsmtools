@@ -45,7 +45,7 @@ The tools consist of a mix of Python and R scripts for data processing, analysis
 
 This diagram demonstrates how the naadsmtools interrelate and how data and analyses proceed through the pipeline.
 
-![Flow diagram for tools](/naadsmtools.png?raw=true "How tools interrelate") 
+![Flow diagram for tools](naadsmtools.png?raw=true "How tools interrelate") 
 
 ### Makefile
 
