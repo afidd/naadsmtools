@@ -1,10 +1,10 @@
 # naadsmtools
-A set of scripts and code to assist with the analysis of simulation results from the North American Animal Disease Simulation Model.  Repository is online at [https://github.com/afidd/naadsmtools](https://github.com/afidd/naadsmtools).
+A set of scripts and code to assist with the analysis of simulation results from the North American Animal Disease Spread Model.  Repository is online at [https://github.com/afidd/naadsmtools](https://github.com/afidd/naadsmtools).
 
 ## NAADSM
 
 The
-[North American Animal Disease Simulation Model](http://www.naadsm.org/)
+[North American Animal Disease Spread Model](http://www.naadsm.org/)
 simulates spread of diseases among agricultural units on a landscape.
 It has two parts, a backend called NAADSM/SC (where SC stands for
 supercomputer) that is run from the command line, and a frontend,
